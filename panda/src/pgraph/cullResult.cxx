@@ -65,7 +65,10 @@ CullResult(GraphicsStateGuardianBase *gsg,
 
 #ifdef DO_MEMORY_USAGE
   MemoryUsage::update_type(this, get_class_type());
-#endif
+
+  CullableObject::get_class_type().inc_memory_usage(
+    TypeHandle::MC_array, sizeof(CullableObject) * AllocationPage::_capacity);
+#endif  // DO_MEMORY_USAGE
 
 #ifndef NDEBUG
   _show_transparency = show_transparency.get_value();
@@ -372,6 +375,10 @@ make_new_bin(int bin_index) {
 CullResult::AllocationPage *CullResult::
 new_page() {
   AllocationPage *page = new AllocationPage;
+#ifdef DO_MEMORY_USAGE
+  CullableObject::get_class_type().inc_memory_usage(
+    TypeHandle::MC_array, sizeof(CullableObject) * AllocationPage::_capacity);
+#endif  // DO_MEMORY_USAGE
   page->_next = _page;
   _page = page;
   return page;
@@ -383,9 +390,19 @@ new_page() {
 void CullResult::
 delete_page(AllocationPage *page) {
   size_t size = std::exchange(page->_size, 0);
+  CullableObject *objects = std::launder(reinterpret_cast<CullableObject *>(page->_memory));
   for (size_t i = 0; i < size; ++i) {
-    ((CullableObject *)page->_memory)[i].~CullableObject();
+    objects[i].~CullableObject();
+#ifdef DO_MEMORY_USAGE
+    //MemoryUsage::remove_void_pointer(&objects[i]);
+#endif
   }
+
+#ifdef DO_MEMORY_USAGE
+  CullableObject::get_class_type().dec_memory_usage(
+    TypeHandle::MC_array, sizeof(CullableObject) * AllocationPage::_capacity);
+#endif  // DO_MEMORY_USAGE
+
   AllocationPage *next = page->_next;
   if (next != nullptr) {
     delete_page(next);

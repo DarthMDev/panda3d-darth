@@ -15,6 +15,7 @@
 #include "androidGraphicsStateGuardian.h"
 #include "config_androiddisplay.h"
 #include "androidGraphicsPipe.h"
+#include "config_android.h"
 
 #include "graphicsPipe.h"
 #include "keyboardButton.h"
@@ -38,13 +39,13 @@ TypeHandle AndroidGraphicsWindow::_type_handle;
  */
 AndroidGraphicsWindow::
 AndroidGraphicsWindow(GraphicsEngine *engine, GraphicsPipe *pipe,
-                      const std::string &name,
+                      std::string name,
                       const FrameBufferProperties &fb_prop,
                       const WindowProperties &win_prop,
                       int flags,
                       GraphicsStateGuardian *gsg,
                       GraphicsOutput *host) :
-  GraphicsWindow(engine, pipe, name, fb_prop, win_prop, flags, gsg, host),
+  GraphicsWindow(engine, pipe, std::move(name), fb_prop, win_prop, flags, gsg, host),
   _primary_pointer_down(false),
   _mouse_button_state(0)
 {
@@ -231,6 +232,11 @@ set_properties_now(WindowProperties &properties) {
 
     _properties.set_fullscreen(properties.get_fullscreen());
     properties.clear_fullscreen();
+  }
+
+  if (properties.has_title()) {
+    android_set_title(_app->activity, properties.get_title());
+    properties.clear_title();
   }
 }
 

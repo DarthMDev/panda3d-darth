@@ -20,6 +20,32 @@ resources. If you get stuck, ask for help from our active
 Panda3D is licensed under the Modified BSD License.  See the LICENSE file for
 more details.
 
+Installing Panda3D
+==================
+
+The latest Panda3D SDK can be downloaded from
+[this page](https://www.panda3d.org/download/sdk-1-10-16/).
+If you are familiar with installing Python packages, you can use
+the following command:
+
+```bash
+pip install panda3d
+```
+
+The easiest way to install the latest development build of Panda3D
+into an existing Python installation is using the following command:
+
+```bash
+pip install --pre --extra-index-url https://archive.panda3d.org/ panda3d
+```
+
+If this command fails, please make sure your version of pip is up-to-date.
+
+If you prefer to install the full SDK with all tools, the latest development
+builds can be obtained from [this page](https://www.panda3d.org/download.php?version=devel&sdk).
+
+These are automatically kept up-to-date with the latest GitHub version of Panda.
+
 Building Panda3D
 ================
 
@@ -42,8 +68,8 @@ depending on whether you are on a 32-bit or 64-bit system, or you can
 [click here](https://github.com/rdb/panda3d-thirdparty) for instructions on
 building them from source.
 
-- https://www.panda3d.org/download/panda3d-1.10.15/panda3d-1.10.15-tools-win64.zip
-- https://www.panda3d.org/download/panda3d-1.10.15/panda3d-1.10.15-tools-win32.zip
+- https://www.panda3d.org/download/panda3d-1.10.16/panda3d-1.10.16-tools-win64.zip
+- https://www.panda3d.org/download/panda3d-1.10.16/panda3d-1.10.16-tools-win32.zip
 
 After acquiring these dependencies, you can build Panda3D from the command
 prompt using the following command.  Change the `--msvc-version` option based
@@ -114,7 +140,7 @@ macOS
 -----
 
 On macOS, you will need to download a set of precompiled thirdparty packages in order to
-compile Panda3D, which can be acquired from [here](https://www.panda3d.org/download/panda3d-1.10.15/panda3d-1.10.15-tools-mac.tar.gz).
+compile Panda3D, which can be acquired from [here](https://www.panda3d.org/download/panda3d-1.10.16/panda3d-1.10.16-tools-mac.tar.gz).
 
 After placing the thirdparty directory inside the panda3d source directory,
 you may build Panda3D using a command like the following:
@@ -122,9 +148,6 @@ you may build Panda3D using a command like the following:
 ```bash
 python makepanda/makepanda.py --everything --installer
 ```
-
-You may target a specific minimum macOS version using the --osxtarget flag
-followed by the release number, eg. 10.9 or 10.14.
 
 If the build was successful, makepanda will have generated a .dmg file in
 the source directory containing the installer.  Simply open it and run the
@@ -198,8 +221,8 @@ information as possible to help the developers track down the issue, such as
 your version of Panda3D, operating system, architecture, and any code and
 models that are necessary for the developers to reproduce the issue.
 
-If you're not sure whether you've encountered a bug, feel free to ask about
-it in the forums or the IRC channel first.
+If you're unsure whether you've encountered a bug, feel free to ask in the [forums](https://discourse.panda3d.org) or the [IRC channel](https://web.libera.chat/#panda3d) before opening an issue.
+
 
 Supporting the Project
 ======================
@@ -208,9 +231,12 @@ If you would like to support the project financially, visit
 [our campaign on OpenCollective](https://opencollective.com/panda3d).  Your
 contributions help us accelerate the development of Panda3D.
 
-For the list of backers, see the [BACKERS.md](BACKERS.md) file or visit the
-[Sponsors page](https://www.panda3d.org/sponsors) on our web site.  Thank you
-to everyone who has donated!
+For the complete list of backers, see the [BACKERS.md](BACKERS.md) file or
+visit the [Sponsors page](https://www.panda3d.org/sponsors) on our web site.
+Thank you to everyone who has donated!
+
+[<img src="https://www.panda3d.org/wp-content/uploads/2024/08/Route4MeLogo1185x300-2-1-1024x259.png" alt="Route4Me" height="48">](https://route4me.com/)
+[<img src="https://www.panda3d.org/wp-content/uploads/2026/01/black-logo-1-e1768931551108.png" alt="TestMu AI" height="48">](https://www.testmu.ai/?utm_source=panda3d&utm_medium=sponsor)
 
 <a href="https://opencollective.com/panda3d" target="_blank">
   <img src="https://opencollective.com/panda3d/contribute/button@2x.png?color=blue" width=300 />

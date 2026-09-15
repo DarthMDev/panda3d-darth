@@ -343,7 +343,8 @@ test_intersection_from_line(const CollisionEntry &entry) const {
   const CollisionLine *line;
   DCAST_INTO_R(line, entry.get_from(), nullptr);
 
-  const LMatrix4 &wrt_mat = entry.get_wrt_mat();
+  CPT(TransformState) wrt_space = entry.get_wrt_space();
+  const LMatrix4 &wrt_mat = wrt_space->get_mat();
 
   LPoint3 from_origin = line->get_origin() * wrt_mat;
   LVector3 from_direction = line->get_direction() * wrt_mat;
@@ -386,7 +387,8 @@ PT(CollisionEntry) CollisionBox::
 test_intersection_from_ray(const CollisionEntry &entry) const {
   const CollisionRay *ray;
   DCAST_INTO_R(ray, entry.get_from(), nullptr);
-  const LMatrix4 &wrt_mat = entry.get_wrt_mat();
+  CPT(TransformState) wrt_space = entry.get_wrt_space();
+  const LMatrix4 &wrt_mat = wrt_space->get_mat();
 
   LPoint3 from_origin = ray->get_origin() * wrt_mat;
   LVector3 from_direction = ray->get_direction() * wrt_mat;
@@ -511,7 +513,8 @@ PT(CollisionEntry) CollisionBox::
 test_intersection_from_segment(const CollisionEntry &entry) const {
   const CollisionSegment *seg;
   DCAST_INTO_R(seg, entry.get_from(), nullptr);
-  const LMatrix4 &wrt_mat = entry.get_wrt_mat();
+  CPT(TransformState) wrt_space = entry.get_wrt_space();
+  const LMatrix4 &wrt_mat = wrt_space->get_mat();
 
   LPoint3 from_origin = seg->get_point_a() * wrt_mat;
   LPoint3 from_extent = seg->get_point_b() * wrt_mat;
@@ -538,7 +541,7 @@ test_intersection_from_segment(const CollisionEntry &entry) const {
   }
 
   // Our interior point is the closest point to t2 that is inside the segment.
-  new_entry->set_interior_point(from_origin + std::min(std::max(t2, 0.0), 1.0) * from_direction);
+  new_entry->set_interior_point(from_origin + std::clamp(t2, 0.0, 1.0) * from_direction);
 
   LPoint3 point = from_origin + t1 * from_direction;
   new_entry->set_surface_point(point);
@@ -566,7 +569,8 @@ test_intersection_from_capsule(const CollisionEntry &entry) const {
   const CollisionCapsule *capsule;
   DCAST_INTO_R(capsule, entry.get_from(), nullptr);
 
-  const LMatrix4 &wrt_mat = entry.get_wrt_mat();
+  CPT(TransformState) wrt_space = entry.get_wrt_space();
+  const LMatrix4 &wrt_mat = wrt_space->get_mat();
 
   LPoint3 from_a = capsule->get_point_a() * wrt_mat;
   LPoint3 from_b = capsule->get_point_b() * wrt_mat;
@@ -593,7 +597,7 @@ test_intersection_from_capsule(const CollisionEntry &entry) const {
     return nullptr;
   }
 
-  t1 = std::min(1.0, std::max(0.0, (t1 + t2) * 0.5));
+  t1 = std::clamp((t1 + t2) * 0.5, 0.0, 1.0);
   LPoint3 point = from_a + from_direction * t1;
 
   // We now have a point of intersection between the line segment and the
@@ -711,7 +715,8 @@ test_intersection_from_box(const CollisionEntry &entry) const {
   const CollisionBox *box;
   DCAST_INTO_R(box, entry.get_from(), nullptr);
 
-  const LMatrix4 &wrt_mat = entry.get_wrt_mat();
+  CPT(TransformState) wrt_space = entry.get_wrt_space();
+  const LMatrix4 &wrt_mat = wrt_space->get_mat();
 
   LPoint3 diff = wrt_mat.xform_point_general(box->get_center()) - _center;
   LVector3 from_extents = box->get_dimensions() * 0.5f;
@@ -880,9 +885,9 @@ test_intersection_from_box(const CollisionEntry &entry) const {
   // This isn't always the correct surface point.  However, it seems to be
   // enough to let the pusher do the right thing.
   LPoint3 surface(
-    min(max(diff[0], -into_extents[0]), into_extents[0]),
-    min(max(diff[1], -into_extents[1]), into_extents[1]),
-    min(max(diff[2], -into_extents[2]), into_extents[2]));
+    std::clamp(diff[0], -into_extents[0], into_extents[0]),
+    std::clamp(diff[1], -into_extents[1], into_extents[1]),
+    std::clamp(diff[2], -into_extents[2], into_extents[2]));
 
   // Create the normal along the axis of least penetration.
   LVector3 normal(0);
