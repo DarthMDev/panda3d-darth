@@ -5162,7 +5162,6 @@ if not PkgSkip("TOONTOWN"):
     PyTargetAdd('toontown.pyd', input='libp3dna_igate.obj')
     PyTargetAdd('toontown.pyd', input='libp3suit_igate.obj')
     PyTargetAdd('toontown.pyd', input='libp3toontown.dll')
-    PyTargetAdd('toontown.pyd', input='libp3interrogatedb.dll')
     PyTargetAdd('toontown.pyd', input=COMMON_PANDA_LIBS)
 
 #
